@@ -199,7 +199,7 @@ R² Score mengukur proporsi variansi dalam variabel dependen yang dapat dijelask
 
 Formula R² Score dapat dinyatakan sebagai:
 
-$$ R^2 = 1 - \frac{\sum_{i=1}^{n} (y_i - \hat{y}_i)^2}{\sum_{i=1}^{n} (y_i - \bar{y})^2} $$
+$$R^2 = 1 - \frac{\sum_{i=1}^{n} (y_i - \hat{y}_i)^2}{\sum_{i=1}^{n} (y_i - \bar{y})^2}$$
 
 Di mana:
 - $y_i$ adalah nilai aktual,
