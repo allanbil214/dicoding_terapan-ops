@@ -190,9 +190,9 @@ Pada tahap evaluasi ini, model yang dibangun untuk memprediksi jumlah sepeda yan
   ![MAE Formula](https://latex.codecogs.com/png.image?\large&space;\dpi{150}\bg{white}\mathbf{MAE=\frac{1}{n}\sum_{i=1}^{n}|y_i-\hat{y}_i|})
 
 	Di mana:
-	- $y_i$ adalah nilai aktual dari variabel dependen untuk observasi ke-i
-	- $\hat{y}_i$ adalah nilai prediksi dari variabel dependen untuk observasi ke-i
-	- $\bar{y}$ adalah nilai rata-rata dari variabel dependen
+	- $y_i$ adalah nilai aktual,
+	- $\hat{y}_i$ adalah nilai prediksi,
+	- $n$ adalah jumlah sampel dalam dataset
 	
 - **R2 Score (Koefisien Determinasi)**:
   R2 Score mengukur proporsi variansi dalam variabel dependen yang dapat dijelaskan oleh model. Nilai R2 berkisar antara 0 hingga 1, di mana nilai 1 menunjukkan bahwa model dapat menjelaskan semua variasi data. R2 Score yang lebih tinggi menunjukkan model yang lebih baik.
@@ -205,7 +205,7 @@ Pada tahap evaluasi ini, model yang dibangun untuk memprediksi jumlah sepeda yan
 	- $y_i$ adalah nilai aktual dari variabel dependen untuk observasi ke-i
 	- $\hat{y}_i$ adalah nilai prediksi dari variabel dependen untuk observasi ke-i
 	- $\bar{y}$ adalah nilai rata-rata dari variabel dependen
-	- $n$ adalah jumlah total observasi
+	- $n$ adalah jumlah sampel dalam dataset
 
 ### 2. Hasil Proyek Berdasarkan Metrik Evaluasi
 
