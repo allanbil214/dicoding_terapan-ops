@@ -187,12 +187,12 @@ Pada tahap evaluasi ini, model yang dibangun untuk memprediksi jumlah sepeda yan
 
   Formula MAE dapat dinyatakan sebagai:
 
-\text{MAE} = \frac{1}{n} \sum_{i=1}^{n} |y_i - \hat{y}_i|
+  \sum_{i=1}^{D}|x_i-y_i|
   
   Di mana:
-  - \( y_i \) adalah nilai aktual,
-  - \( \hat{y}_i \) adalah nilai prediksi,
-  - \( n \) adalah jumlah total observasi.
+- $y_i$ adalah nilai aktual,
+- $\hat{y}_i$ adalah nilai prediksi,
+- $\bar{y}$ adalah rata-rata dari nilai aktual.
 
 - **R2 Score (Koefisien Determinasi)**:
 R² Score mengukur proporsi variansi dalam variabel dependen yang dapat dijelaskan oleh model. Nilai R² berkisar antara 0 hingga 1, di mana nilai 1 menunjukkan bahwa model dapat menjelaskan semua variasi data. R² Score yang lebih tinggi menunjukkan model yang lebih baik.
