@@ -186,12 +186,13 @@ Pada tahap evaluasi ini, model yang dibangun untuk memprediksi jumlah sepeda yan
   MAE mengukur rata-rata kesalahan absolut antara nilai yang diprediksi oleh model dan nilai sebenarnya. Metrik ini memberikan gambaran seberapa jauh prediksi model dari nilai aktual, dalam hal satuan yang sama dengan variabel target (jumlah sepeda yang disewa). Semakin rendah nilai MAE, semakin baik performa model.
 
   Formula MAE dapat dinyatakan sebagai:
+  
   ![MAE Formula](https://latex.codecogs.com/png.image?\large&space;\dpi{150}\bg{white}\mathbf{MAE=\frac{1}{n}\sum_{i=1}^{n}|y_i-\hat{y}_i|})
 
 	Di mana:
-	- $y_i$ adalah nilai aktual,
-	- $\hat{y}_i$ adalah nilai prediksi,
-	- $\bar{y}$ adalah rata-rata dari nilai aktual.
+	- $y_i$ adalah nilai aktual dari variabel dependen untuk observasi ke-i
+	- $\hat{y}_i$ adalah nilai prediksi dari variabel dependen untuk observasi ke-i
+	- $\bar{y}$ adalah nilai rata-rata dari variabel dependen
 	
 - **R2 Score (Koefisien Determinasi)**:
   R2 Score mengukur proporsi variansi dalam variabel dependen yang dapat dijelaskan oleh model. Nilai R2 berkisar antara 0 hingga 1, di mana nilai 1 menunjukkan bahwa model dapat menjelaskan semua variasi data. R2 Score yang lebih tinggi menunjukkan model yang lebih baik.
@@ -200,7 +201,11 @@ Pada tahap evaluasi ini, model yang dibangun untuk memprediksi jumlah sepeda yan
 
   ![R-Squared Formula](https://latex.codecogs.com/png.image?\large&space;\dpi{150}\bg{white}\mathbf{R^2=1-\frac{\sum_{i=1}^{n}(y_i-\hat{y}_i)^2}{\sum_{i=1}^{n}(y_i-\bar{y})^2}})
   
-  di mana $bar{y}$ adalah rata-rata dari nilai aktual.
+  Di mana: 
+	- $y_i$ adalah nilai aktual dari variabel dependen untuk observasi ke-i
+	- $\hat{y}_i$ adalah nilai prediksi dari variabel dependen untuk observasi ke-i
+	- $\bar{y}$ adalah nilai rata-rata dari variabel dependen
+	- $n$ adalah jumlah total observasi
 
 ### 2. Hasil Proyek Berdasarkan Metrik Evaluasi
 
