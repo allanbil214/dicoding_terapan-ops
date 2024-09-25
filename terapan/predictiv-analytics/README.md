@@ -186,9 +186,8 @@ Pada tahap evaluasi ini, model yang dibangun untuk memprediksi jumlah sepeda yan
   MAE mengukur rata-rata kesalahan absolut antara nilai yang diprediksi oleh model dan nilai sebenarnya. Metrik ini memberikan gambaran seberapa jauh prediksi model dari nilai aktual, dalam hal satuan yang sama dengan variabel target (jumlah sepeda yang disewa). Semakin rendah nilai MAE, semakin baik performa model.
 
   Formula MAE dapat dinyatakan sebagai:
-  \[
-  \text{MAE} = \frac{1}{n} \sum_{i=1}^{n} |y_i - \hat{y}_i|
-  \]
+
+\text{MAE} = \frac{1}{n} \sum_{i=1}^{n} |y_i - \hat{y}_i|
   
   Di mana:
   - \( y_i \) adalah nilai aktual,
