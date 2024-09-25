@@ -186,7 +186,7 @@ Pada tahap evaluasi ini, model yang dibangun untuk memprediksi jumlah sepeda yan
   MAE mengukur rata-rata kesalahan absolut antara nilai yang diprediksi oleh model dan nilai sebenarnya. Metrik ini memberikan gambaran seberapa jauh prediksi model dari nilai aktual, dalam hal satuan yang sama dengan variabel target (jumlah sepeda yang disewa). Semakin rendah nilai MAE, semakin baik performa model.
 
   Formula MAE dapat dinyatakan sebagai:
-  ![MAE Formula](https://latex.codecogs.com/png.image?\large&space;\dpi{150}\mathbf{MAE=\frac{1}{n}\sum_{i=1}^{n}|y_i-\hat{y}_i|})
+  ![MAE Formula](https://latex.codecogs.com/png.image?\large&space;\dpi{150}\bg{white}\mathbf{MAE=\frac{1}{n}\sum_{i=1}^{n}|y_i-\hat{y}_i|})
 
 	Di mana:
 	- $y_i$ adalah nilai aktual,
@@ -198,7 +198,7 @@ Pada tahap evaluasi ini, model yang dibangun untuk memprediksi jumlah sepeda yan
 
   Formula R2 Score dapat dinyatakan sebagai:
 
-  ![R-Squared Formula](https://latex.codecogs.com/png.image?\large&space;\dpi{150}\mathbf{R^2=1-\frac{\sum_{i=1}^{n}(y_i-\hat{y}_i)^2}{\sum_{i=1}^{n}(y_i-\bar{y})^2}})
+  ![R-Squared Formula](https://latex.codecogs.com/png.image?\large&space;\dpi{150}\bg{white}\mathbf{R^2=1-\frac{\sum_{i=1}^{n}(y_i-\hat{y}_i)^2}{\sum_{i=1}^{n}(y_i-\bar{y})^2}})
   
   di mana $bar{y}$ adalah rata-rata dari nilai aktual.
 
