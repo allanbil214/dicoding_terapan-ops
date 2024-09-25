@@ -202,10 +202,10 @@ Pada tahap evaluasi ini, model yang dibangun untuk memprediksi jumlah sepeda yan
   ![R-Squared Formula](https://latex.codecogs.com/png.image?\large&space;\dpi{150}\bg{white}\mathbf{R^2=1-\frac{\sum_{i=1}^{n}(y_i-\hat{y}_i)^2}{\sum_{i=1}^{n}(y_i-\bar{y})^2}})
   
   Di mana: 
-	- $y_i$ adalah nilai aktual dari variabel dependen untuk observasi ke-i
-	- $\hat{y}_i$ adalah nilai prediksi dari variabel dependen untuk observasi ke-i
-	- $\bar{y}$ adalah nilai rata-rata dari variabel dependen
-	- $n$ adalah jumlah sampel dalam dataset
+	- $y_i$ adalah nilai sebenarnya untuk data ke-i
+	- $\hat{y}_i$ adalah nilai prediksi untuk data ke-i
+	- $\bar{y}$ adalah rata-rata dari semua nilai sebenarnya
+	- $n$ adalah jumlah data dalam dataset
 
 ### 2. Hasil Proyek Berdasarkan Metrik Evaluasi
 
