@@ -195,17 +195,17 @@ Pada tahap evaluasi ini, model yang dibangun untuk memprediksi jumlah sepeda yan
   - \( n \) adalah jumlah total observasi.
 
 - **R2 Score (Koefisien Determinasi)**:
-  R2 Score mengukur proporsi variansi dalam variabel dependen yang dapat dijelaskan oleh model. Nilai R2 berkisar antara 0 hingga 1, di mana nilai 1 menunjukkan bahwa model dapat menjelaskan semua variasi data. R2 Score yang lebih tinggi menunjukkan model yang lebih baik.
+R² Score mengukur proporsi variansi dalam variabel dependen yang dapat dijelaskan oleh model. Nilai R² berkisar antara 0 hingga 1, di mana nilai 1 menunjukkan bahwa model dapat menjelaskan semua variasi data. R² Score yang lebih tinggi menunjukkan model yang lebih baik.
 
-  Formula R2 Score dapat dinyatakan sebagai:
-  \[
-  R^2 = 1 - \frac{\sum_{i=1}^{n} (y_i - \hat{y}_i)^2}{\sum_{i=1}^{n} (y_i - \bar{y})^2}
-  \]
-  
-  Di mana:
-  - \( y_i \) adalah nilai aktual,
-  - \( \hat{y}_i \) adalah nilai prediksi,
-  - \( \bar{y} \) adalah rata-rata dari nilai aktual.
+Formula R² Score dapat dinyatakan sebagai:
+
+$$ R^2 = 1 - \frac{\sum_{i=1}^{n} (y_i - \hat{y}_i)^2}{\sum_{i=1}^{n} (y_i - \bar{y})^2} $$
+
+Di mana:
+- $y_i$ adalah nilai aktual,
+- $\hat{y}_i$ adalah nilai prediksi,
+- $\bar{y}$ adalah rata-rata dari nilai aktual.
+
 
 ### 2. Hasil Proyek Berdasarkan Metrik Evaluasi
 
