@@ -38,7 +38,17 @@ Dalam proyek ini, tujuan utamanya adalah memprediksi jumlah sepeda yang akan dis
 
 ## Data Understanding
 
-Dataset yang digunakan dalam proyek ini berisi informasi cuaca dan detail terkait waktu yang berhubungan dengan jumlah sepeda yang disewa setiap jam di Seoul. Dataset ini diperoleh dari [Kaggle - Seoul Bike Sharing Dataset](https://www.kaggle.com/datasets/joebeachcapital/seoul-bike-sharing/data), yang berisi total 8760 baris data. Setiap baris mewakili satu jam dalam setahun.
+Dataset yang digunakan dalam proyek ini berisi informasi cuaca dan detail waktu yang berkaitan dengan jumlah sepeda yang disewa per jam di Seoul. Dataset ini diperoleh dari [Kaggle - Seoul Bike Sharing Dataset](https://www.kaggle.com/datasets/joebeachcapital/seoul-bike-sharing/data), yang berisi total 8760 baris data dengan 14 kolom sebelum dilakukan one-hot encoding. Setiap baris mewakili satu jam dalam setahun.
+
+### Kondisi Dataset:
+- **Jumlah Baris**: 8760
+- **Jumlah Kolom**: 14 (sebelum one-hot encoding)
+- **Missing Values**: Tidak ada missing value dalam dataset ini.
+- **Duplikat Data**: Tidak ditemukan duplikasi data.
+- **Outlier**: Ditemukan outlier pada beberapa variabel:
+  - **Windspeed** dan **Solar Radiation** memiliki outlier yang terdeteksi pada visualisasi boxplot.
+  - Variabel lain seperti **Rainfall**, **Snowfall**, **Seasons**, **Holiday**, dan **Functioning Day** tidak memiliki outlier yang terlihat, ditunjukkan oleh boxplot kosong atau penuh tanpa tail.
+  - **Hour**, **Temperature**, **Humidity**, **Visibility**, dan **Dew Point Temperature** tidak menunjukkan adanya outlier.
 
 Dataset ini terdiri dari berbagai variabel yang memberikan gambaran lengkap tentang kondisi cuaca dan faktor temporal yang dapat memengaruhi permintaan sewa sepeda.
 
@@ -57,48 +67,49 @@ Dataset ini terdiri dari berbagai variabel yang memberikan gambaran lengkap tent
 - **Snowfall (cm)**: Curah salju dalam sentimeter.
 - **Seasons**: Musim (Winter, Spring, Summer, Autumn).
 - **Holiday**: Menyatakan apakah hari tersebut adalah hari libur atau bukan (Holiday/No Holiday).
-- **Functioning Day**: Menyatakan apakah hari tersebut adalah hari kerja fungsional atau non-fungsional (Fun/NoFun).
+- **Functioning Day**: Menyatakan apakah hari tersebut adalah hari kerja fungsional atau non-fungsional (Fun/NoFun). 
 
 ### Exploratory Data Analysis (EDA)
 
-Untuk memahami pola dan hubungan antar variabel dalam data, dilakukan beberapa tahap analisis eksploratif (EDA):
-
 1. **Statistik Deskriptif**  
-   Dilakukan perhitungan statistik dasar (mean, median, minimum, maksimum, dll.) untuk semua variabel dalam dataset untuk mendapatkan gambaran umum mengenai data.
+   Dari perhitungan statistik dasar, terlihat bahwa rentang nilai pada beberapa variabel seperti suhu, kelembaban, dan kecepatan angin cukup bervariasi, yang mengindikasikan adanya fluktuasi cuaca yang signifikan sepanjang tahun. Selain itu, jumlah sepeda yang disewa per jam memiliki distribusi yang tidak merata, dengan beberapa jam tertentu menunjukkan permintaan yang lebih tinggi.
 
 2. **Distribusi Sepeda yang Disewa**  
-   Visualisasi distribusi dari jumlah sepeda yang disewa per jam menggunakan histogram untuk melihat pola frekuensi dari permintaan sepeda.
+   Histogram distribusi jumlah sepeda yang disewa menunjukkan bahwa permintaan sewa sepeda cenderung terkonsentrasi di kisaran jumlah yang rendah hingga menengah. Permintaan yang sangat tinggi lebih jarang terjadi, yang menunjukkan pola penggunaan sepeda yang mungkin terkait dengan jam-jam tertentu atau kondisi cuaca tertentu.
 
-3. **Korelasi antar variabel**  
-   Heatmap korelasi digunakan untuk menganalisis hubungan antara variabel cuaca dan jumlah sepeda yang disewa. Ini membantu mengidentifikasi variabel mana yang memiliki hubungan paling kuat dengan permintaan sepeda.
+3. **Korelasi antar Variabel**  
+   Dari heatmap korelasi, terlihat bahwa suhu memiliki korelasi positif yang cukup kuat dengan jumlah sepeda yang disewa, sedangkan curah hujan dan salju menunjukkan korelasi negatif yang signifikan. Ini menandakan bahwa cuaca panas meningkatkan permintaan sewa, sementara curah hujan dan salju cenderung mengurangi jumlah sepeda yang disewa.
 
-4. **Visualisasi berdasarkan waktu dan musim**  
-   Boxplot digunakan untuk memvisualisasikan bagaimana permintaan sepeda bervariasi menurut musim, sementara scatterplot menunjukkan hubungan antara suhu dan jumlah sepeda yang disewa.
+4. **Visualisasi berdasarkan Waktu dan Musim**  
+   Boxplot menunjukkan bahwa permintaan sepeda bervariasi berdasarkan musim. Musim panas menunjukkan jumlah sepeda yang disewa lebih tinggi dibandingkan dengan musim lainnya. Scatterplot antara suhu dan jumlah sepeda juga memperkuat temuan bahwa permintaan cenderung meningkat seiring dengan kenaikan suhu.
 
-5. **Tren bulanan**  
-   Tren bulanan rata-rata sewa sepeda diperiksa menggunakan line plot, yang membantu memahami fluktuasi permintaan sepanjang tahun.
+5. **Tren Bulanan**  
+   Dari tren bulanan, terlihat bahwa jumlah sewa sepeda mencapai puncaknya di bulan-bulan musim panas (Juli dan Agustus), sementara bulan-bulan musim dingin menunjukkan penurunan drastis dalam permintaan. Ini konsisten dengan pola cuaca yang lebih hangat meningkatkan aktivitas luar ruangan seperti bersepeda.
 
 ## Data Preparation
 
 Dalam tahap ini, dilakukan beberapa langkah persiapan data untuk memastikan data siap digunakan dalam proses modeling. Langkah-langkah ini mencakup pembersihan data, pengubahan format, dan transformasi fitur yang diperlukan untuk meningkatkan kualitas data dalam rangka meningkatkan kinerja model.
 
-### 1. Memeriksa Missing Values
-Tahap pertama dalam persiapan data adalah memeriksa apakah ada data yang hilang (missing values) dalam dataset. Dengan menggunakan fungsi `.isnull().sum()`, dapat dipastikan bahwa tidak ada missing values dalam dataset. Ini memastikan bahwa data lengkap dan siap digunakan tanpa perlu melakukan imputasi atau pembuangan data.
+### 1. Memeriksa dan Menangani Missing Values
+Pada bagian **Data Understanding**, pengecekan terhadap **missing values** telah dilakukan dan ditemukan bahwa dataset ini **tidak mengandung missing values**. Oleh karena itu, tidak diperlukan penanganan lebih lanjut seperti imputasi atau penghapusan data. Hal ini memastikan bahwa data lengkap dan siap digunakan untuk proses pemodelan.
 
-### 2. Konversi dan Ekstraksi Tanggal
-Kolom **Date** yang awalnya dalam format string dikonversi menjadi format tanggal dengan fungsi `pd.to_datetime()`. Setelah itu, komponen-komponen waktu seperti **Year**, **Month**, dan **Day** diekstraksi dari kolom tanggal untuk memberikan informasi temporal yang lebih kaya kepada model. Kolom **Date** asli kemudian dihapus karena informasi waktu yang relevan telah diekstrak.
+### 2. Memeriksa dan Menangani Duplikasi Data
+Pada bagian **Data Understanding**, pengecekan terhadap **duplicated data** telah dilakukan dan ditemukan bahwa dataset ini **tidak mengandung duplicated data**. Oleh karena itu, tidak diperlukan penanganan lebih lanjut seperti penghapusan baris data duplikat. Hal ini memastikan bahwa setiap baris dalam dataset unik dan siap digunakan untuk proses pemodelan tanpa risiko adanya bias akibat duplikasi data.
 
-Alasan: Ekstraksi komponen tanggal diperlukan karena tahun, bulan, dan hari dapat mempengaruhi pola permintaan sepeda yang tidak ditangkap dalam format string.
+### 3. Konversi dan Ekstraksi Tanggal
+Kolom **Date** yang awalnya dalam format string dikonversi menjadi format tanggal menggunakan `pd.to_datetime()`. Setelah konversi, komponen-komponen waktu seperti **Year**, **Month**, dan **Day** diekstraksi dari kolom tanggal. Kolom **Date** asli kemudian dihapus karena informasi temporal yang relevan sudah terekstraksi.
 
-### 3. One-Hot Encoding
-Variabel kategori seperti **Seasons** (musim), **Holiday** (hari libur), dan **Functioning Day** (hari kerja fungsional atau non-fungsional) dikonversi menggunakan teknik **one-hot encoding**. Ini dilakukan dengan memecah setiap kategori menjadi beberapa kolom biner untuk setiap kategori unik. Teknik ini penting untuk memastikan bahwa model machine learning dapat memahami variabel kategori sebagai numerik tanpa memberikan bobot berlebihan pada urutan kategori tertentu.
+**Alasan:** Komponen tanggal seperti tahun, bulan, dan hari dapat memengaruhi pola permintaan sepeda dan memberikan informasi penting yang tidak dapat ditangkap jika hanya menggunakan format string.
 
-Alasan: One-hot encoding penting untuk model seperti Random Forest yang tidak dapat langsung menangani variabel kategori.
+### 4. One-Hot Encoding
+Variabel kategori seperti **Seasons** (musim), **Holiday** (hari libur), dan **Functioning Day** (hari kerja fungsional/non-fungsional) dikonversi menjadi format numerik menggunakan **one-hot encoding**. Teknik ini mengubah setiap kategori unik menjadi kolom biner terpisah, di mana 1 menunjukkan kehadiran kategori tersebut dan 0 sebaliknya.
 
-### 4. Memilih Fitur dan Target
-Setelah data diubah, dipilih beberapa fitur yang relevan untuk digunakan dalam model. Fitur yang dipilih mencakup variabel cuaca, waktu, dan variabel kategori yang sudah diubah. Variabel target yang diprediksi adalah **Rented Bike Count** (jumlah sepeda yang disewa).
+**Alasan:** One-hot encoding penting agar model machine learning dapat memahami variabel kategori sebagai numerik tanpa memberikan bobot berlebihan pada urutan kategori.
 
-Fitur yang dipilih:
+### 5. Memilih Fitur dan Target
+Setelah data diubah, dipilih beberapa fitur yang relevan untuk digunakan dalam model. Fitur yang dipilih mencakup variabel cuaca, waktu, dan variabel kategori yang telah diubah. Variabel target yang diprediksi adalah **Rented Bike Count** (jumlah sepeda yang disewa).
+
+**Fitur yang dipilih:**
 - Hour
 - Temperature(°C)
 - Humidity(%)
@@ -108,21 +119,21 @@ Fitur yang dipilih:
 - Solar Radiation (MJ/m2)
 - Rainfall(mm)
 - Snowfall (cm)
-- Seasons_Spring, Seasons_Summer, Seasons_Autumn (hasil one-hot encoding)
-- Holiday_No Holiday
-- Functioning Day_Yes
+- Seasons (hasil one-hot encoding)
+- Holiday (hasil one-hot encoding)
+- Functioning Day (hasil one-hot encoding)
 
-Alasan: Fitur-fitur ini dipilih berdasarkan korelasi mereka dengan jumlah sepeda yang disewa, yang diperoleh dari hasil EDA.
+**Alasan:** Fitur-fitur ini dipilih berdasarkan hasil EDA yang menunjukkan korelasi mereka dengan jumlah sepeda yang disewa.
 
-### 5. Split Data menjadi Train dan Test
-Data dipisahkan menjadi data **training** dan **testing** dengan rasio 80:20. Hal ini dilakukan untuk memastikan bahwa model dapat diuji dengan data yang belum pernah dilihat sebelumnya, sehingga hasil evaluasi akan lebih realistis dan tidak overfitting.
+### 6. Split Data menjadi Train dan Test
+Data dipisahkan menjadi **training set** dan **testing set** dengan rasio 80:20 menggunakan fungsi `train_test_split`. Ini dilakukan untuk memastikan bahwa model dapat diuji menggunakan data yang belum pernah dilihat sebelumnya, sehingga hasil evaluasi akan lebih akurat dan model tidak overfitting.
 
-Alasan: Membagi data adalah langkah penting dalam pengembangan model untuk menilai kinerja model pada data yang tidak digunakan dalam proses pelatihan.
+**Alasan:** Pembagian data sangat penting untuk mengukur kinerja model pada data yang tidak digunakan dalam pelatihan, memastikan generalisasi yang lebih baik.
 
-### 6. Standarisasi Fitur
-Beberapa fitur numerik seperti suhu, kelembaban, kecepatan angin, dan variabel cuaca lainnya distandarisasi menggunakan **StandardScaler**. Ini dilakukan agar semua fitur berada pada skala yang sama, terutama karena fitur seperti suhu dan radiasi matahari memiliki rentang nilai yang berbeda-beda. Standarisasi membantu meningkatkan kinerja model, terutama pada algoritma seperti Random Forest yang sensitif terhadap perbedaan skala antar fitur.
+### 7. Standarisasi Fitur
+Fitur numerik seperti suhu, kelembaban, kecepatan angin, dan variabel cuaca lainnya distandarisasi menggunakan **StandardScaler**. Proses standarisasi ini memastikan bahwa setiap fitur memiliki skala yang sama, sehingga model tidak memberikan bobot lebih pada fitur dengan skala yang lebih besar, seperti suhu dan radiasi matahari.
 
-Alasan: Standarisasi diperlukan untuk memastikan bahwa model tidak memberikan bobot lebih pada fitur dengan skala yang lebih besar secara tidak proporsional.
+**Alasan:** Standarisasi sangat penting dalam banyak model machine learning, terutama model seperti Random Forest, untuk menghindari dominasi fitur dengan rentang nilai lebih besar.
 
 ## Modeling
 
@@ -178,7 +189,11 @@ Pada tahap evaluasi ini, model yang dibangun untuk memprediksi jumlah sepeda yan
   \[
   \text{MAE} = \frac{1}{n} \sum_{i=1}^{n} |y_i - \hat{y}_i|
   \]
-  di mana \(y_i\) adalah nilai aktual, \(\hat{y}_i\) adalah nilai prediksi, dan \(n\) adalah jumlah total observasi.
+  
+  Di mana:
+  - \( y_i \) adalah nilai aktual,
+  - \( \hat{y}_i \) adalah nilai prediksi,
+  - \( n \) adalah jumlah total observasi.
 
 - **R2 Score (Koefisien Determinasi)**:
   R2 Score mengukur proporsi variansi dalam variabel dependen yang dapat dijelaskan oleh model. Nilai R2 berkisar antara 0 hingga 1, di mana nilai 1 menunjukkan bahwa model dapat menjelaskan semua variasi data. R2 Score yang lebih tinggi menunjukkan model yang lebih baik.
@@ -187,7 +202,11 @@ Pada tahap evaluasi ini, model yang dibangun untuk memprediksi jumlah sepeda yan
   \[
   R^2 = 1 - \frac{\sum_{i=1}^{n} (y_i - \hat{y}_i)^2}{\sum_{i=1}^{n} (y_i - \bar{y})^2}
   \]
-  di mana \(\bar{y}\) adalah rata-rata dari nilai aktual.
+  
+  Di mana:
+  - \( y_i \) adalah nilai aktual,
+  - \( \hat{y}_i \) adalah nilai prediksi,
+  - \( \bar{y} \) adalah rata-rata dari nilai aktual.
 
 ### 2. Hasil Proyek Berdasarkan Metrik Evaluasi
 
@@ -200,6 +219,49 @@ Setelah model dilatih dan diuji, hasil evaluasi menunjukkan:
 - Dengan nilai **MAE sebesar 144.45**, ini berarti rata-rata kesalahan prediksi model adalah sekitar 144 sepeda. Ini menunjukkan bahwa dalam banyak kasus, model memprediksi jumlah sepeda yang disewa dengan akurasi yang cukup baik, meskipun masih terdapat kesalahan yang dapat diperbaiki.
   
 - **R2 Score sebesar 0.86** menunjukkan bahwa model dapat menjelaskan sekitar 86% dari variansi dalam jumlah sepeda yang disewa berdasarkan fitur-fitur yang digunakan. Nilai ini menunjukkan bahwa model memiliki performa yang sangat baik dan dapat diandalkan untuk melakukan prediksi dalam konteks ini.
+
+### 3. Dampak Model terhadap Business Understanding
+
+#### Apakah model menjawab **problem statement**?
+Untuk menjawab pertanyaan apakah **problem statements** telah berhasil dijawab, berikut adalah analisis berdasarkan hasil evaluasi model:
+
+### 1. **Bagaimana kondisi cuaca memengaruhi permintaan sewa sepeda di Seoul?**
+
+**Jawaban:**
+Ya, **problem statement ini berhasil dijawab**. Hasil **exploratory data analysis (EDA)** menunjukkan bahwa variabel-variabel cuaca seperti suhu, kelembaban, kecepatan angin, dan radiasi matahari memiliki korelasi signifikan dengan jumlah sepeda yang disewa. Selain itu, model prediksi menggunakan Random Forest menunjukkan bahwa variabel-variabel cuaca memainkan peran penting dalam memprediksi permintaan sepeda. **R2 Score sebesar 0.86** menunjukkan bahwa model mampu menangkap sebagian besar variabilitas dalam data, termasuk dampak dari kondisi cuaca.
+
+---
+
+### 2. **Apakah waktu dalam sehari dan musim memengaruhi permintaan sepeda?**
+
+**Jawaban:**
+Ya, **problem statement ini juga berhasil dijawab**. Variabel waktu, seperti jam dalam sehari dan musim, jelas memengaruhi pola permintaan sepeda. Berdasarkan analisis visual dari data, terlihat adanya tren bahwa **jam sibuk di pagi dan sore hari** serta **musim panas** memiliki permintaan yang lebih tinggi untuk sepeda. Model prediksi dapat mengenali pola ini dengan baik, yang ditunjukkan dengan performa prediksi yang akurat pada data waktu dan musim.
+
+---
+
+### 3. **Bagaimana kita dapat memanfaatkan data historis untuk memprediksi permintaan sewa sepeda di masa mendatang?**
+
+**Jawaban:**
+Ya, **problem statement ini dijawab melalui pengembangan model prediksi**. Data historis yang mencakup berbagai fitur seperti cuaca, waktu, dan hari libur berhasil digunakan untuk melatih model Random Forest, yang kemudian dapat memprediksi permintaan sepeda dengan akurasi yang memadai. Dengan **MAE sebesar 144.45**, model ini menunjukkan bahwa data historis dapat dimanfaatkan untuk membuat prediksi yang cukup akurat terkait jumlah sepeda yang akan disewa di masa mendatang.
+
+---
+
+Dengan demikian, semua **problem statements** telah berhasil dijawab oleh model yang dikembangkan. Hasilnya mendukung pemahaman terhadap faktor-faktor yang memengaruhi permintaan sepeda, serta kemampuan memprediksi pola permintaan di masa mendatang dengan tingkat kesalahan yang rendah.
+
+#### Apakah model berhasil mencapai **goals** yang diharapkan?
+Secara keseluruhan, model ini berhasil mencapai goals yang ditetapkan, yaitu:
+
+1. **Memahami pengaruh variabel cuaca terhadap permintaan sepeda**:  
+   Korelasi antara variabel cuaca seperti suhu dan kelembaban dengan jumlah sepeda yang disewa terlihat jelas dalam hasil EDA, dan model ini mampu menangkap pola tersebut dengan baik.
+
+2. **Mengidentifikasi pola permintaan berdasarkan waktu dan musim**:  
+   Model juga berhasil memanfaatkan variabel waktu, seperti jam dalam sehari dan musim, yang terbukti relevan dalam memprediksi jumlah sepeda yang disewa. Variasi permintaan yang terjadi pada musim panas dan jam sibuk dapat diprediksi dengan akurasi yang baik.
+
+3. **Mengembangkan model prediksi yang akurat**:  
+   Dengan nilai MAE sebesar 144.45, model ini menunjukkan **rata-rata kesalahan prediksi yang cukup rendah**, menjadikan prediksinya berguna untuk membantu perencanaan operasional sistem _bike sharing_ di Seoul.
+
+#### Apakah solusi statement yang direncanakan berdampak?
+Solusi yang diusulkan, yaitu menggunakan algoritma **Random Forest** untuk memprediksi permintaan sepeda, telah terbukti efektif. Model ini menunjukkan performa yang baik dalam mengatasi masalah prediksi, dengan penanganan yang cukup baik terhadap fitur-fitur yang digunakan. Metrik evaluasi menunjukkan bahwa model ini dapat digunakan oleh pengelola sistem _bike sharing_ untuk memprediksi permintaan sepeda dengan cukup akurat, sehingga dapat mendukung keputusan operasional seperti distribusi sepeda di berbagai stasiun.
 
 ### Kesimpulan
 
