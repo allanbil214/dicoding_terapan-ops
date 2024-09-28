@@ -88,6 +88,68 @@ def content_based_recommendations(title, cosine_sim=cosine_sim):
 print("Content-Based Recommendations for 'Harry Potter':")
 print(content_based_recommendations('Harry Potter and the Order of the Phoenix'))
 
+"""Kode untuk menghitung presisi melalui variable yang berisi semua buku Harry Potter yang ada pada dataset."""
+
+def calculate_precision(recommendations, actual_books_read):
+  true_positives = len(set(recommendations) & set(actual_books_read))
+  precision = true_positives / len(recommendations) if len(recommendations) > 0 else 0
+  return precision
+
+# Example usage:
+recommended_books = content_based_recommendations('Harry Potter and the Order of the Phoenix').tolist()
+# Let's assume the user actually read these books (replace with actual user data)
+actual_books_read = ['Harry Potter and the Order of the Phoenix (Harry Potter, #5, Part 1)', 'Harry Potter Boxed Set, Books 1-5 (Harry Potter, #1-5)', 'Harry Potter and the Goblet of Fire', 'Harry Potter and the Chamber of Secrets', "Harry Potter and the Philosopher's Stone", 'Harry Potter and the Half-Blood Prince', 'Harry Potter Boxed Set Books 1-4', 'Harry Potter and the Deathly Hallows', 'Harry Potter Collection (Harry Potter, #1-6)', 'Harry Potter and the Prisoner of Azkaban']
+
+precision = calculate_precision(recommended_books, actual_books_read)
+print(f"Precision: {precision}")
+
+"""Kode ini memiliki fungsi untuk menghitung presisi dan recall dari model, dengan membandingkan buku buku yang ada pada user 2 (dimana user 2 ini telah membaca buku yang banyak pada dataset tersebut) ke buku yang direkomendasikan oleh model."""
+
+# Mengambil buku-buku relevan berdasarkan rating
+def get_relevant_books(user_id, threshold=4):
+    relevant_books = ratings[(ratings['user_id'] == user_id) & (ratings['rating'] >= threshold)]['book_id'].tolist()
+    return relevant_books
+
+# Menghitung Precision dari rekomendasi berbasis konten
+def calculate_precision(user_id, recommended_books):
+    relevant_books = get_relevant_books(user_id)
+    relevant_and_recommended = [book for book in recommended_books if book in relevant_books]
+    precision = len(relevant_and_recommended) / len(recommended_books) if recommended_books else 0
+    return precision
+
+# Menghitung Recall dari rekomendasi berbasis konten
+def calculate_recall(user_id, recommended_books):
+    relevant_books = get_relevant_books(user_id)
+    relevant_and_recommended = [book for book in recommended_books if book in relevant_books]
+    recall = len(relevant_and_recommended) / len(relevant_books) if relevant_books else 0
+    return recall
+
+# Memperbarui fungsi rekomendasi berbasis konten untuk menghitung precision dan recall
+def content_based_recommendations_with_precision_recall(title, user_id, cosine_sim=cosine_sim):
+    # Mendapatkan rekomendasi berbasis konten
+    idx = data.index[data['original_title'] == title].tolist()[0]
+    sim_scores = list(enumerate(cosine_sim[idx]))
+    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+    sim_scores = sim_scores[1:11]
+    book_indices = [i[0] for i in sim_scores]
+    recommended_books = data['book_id'].iloc[book_indices].tolist()
+
+    # Menghitung precision dan recall
+    precision = calculate_precision(user_id, recommended_books)
+    recall = calculate_recall(user_id, recommended_books)
+
+    return data['original_title'].iloc[book_indices], precision, recall
+
+# Contoh penggunaan fungsi dengan precision dan recall
+title = 'Harry Potter and the Order of the Phoenix'
+user_id = 2  # ID pengguna untuk evaluasi
+recommended_books, precision, recall = content_based_recommendations_with_precision_recall(title, user_id)
+
+print(f"Rekomendasi berbasis konten untuk '{title}':")
+print(recommended_books)
+print(f"Precision: {precision:.2f}")
+print(f"Recall: {recall:.2f}")
+
 """Kode berikut memuat dataset rating dari URL yang diberikan dan menyimpannya dalam variabel `ratings` menggunakan pustaka pandas."""
 
 # Collaborative Filtering

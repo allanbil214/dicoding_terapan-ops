@@ -161,40 +161,27 @@ Berikut adalah pembaruan untuk bagian **Modeling**:
 
 ## Modeling
 
-### 1. Content-Based Filtering
+### 1. Cosine Similarity (Content-Based Filtering)
 
-Pada pendekatan **Content-Based Filtering**, model bekerja dengan merekomendasikan buku-buku yang mirip dengan satu buku tertentu berdasarkan fitur deskriptif seperti judul, penulis, bahasa, dan rating. Setelah melakukan **data preparation** dan membangun kolom **tags** yang berisi informasi deskriptif dari setiap buku, dilakukan transformasi data menggunakan **TF-IDF** untuk menghitung kemiripan antar buku.
+Pada pendekatan **Content-Based Filtering**, algoritma yang digunakan untuk menghitung kemiripan antar buku adalah **Cosine Similarity**. Cosine similarity mengukur sudut kosinus antara dua vektor, di mana vektor tersebut adalah representasi dari setiap buku dalam bentuk deskripsi fitur setelah dilakukan **TF-IDF (Term Frequency-Inverse Document Frequency)**. Semakin kecil sudut antara dua vektor (semakin dekat ke 1 nilai cosine similarity), maka semakin mirip kedua buku tersebut.
 
-Proses modeling dilakukan dengan menghitung kemiripan kosinus antar buku berdasarkan nilai-nilai TF-IDF. Berikut adalah contoh kode yang digunakan untuk menghitung kemiripan tersebut:
+#### Cara Kerja Cosine Similarity:
+Cosine similarity dihitung dengan rumus sebagai berikut:
 
-```python
-from sklearn.metrics.pairwise import cosine_similarity
+![Cosine Similarity](https://latex.codecogs.com/png.image?\dpi{150}\bg{white}\mathbf{{cosine\_similarity}(A,B)=\frac{{A\cdot&space;B}}{{\|A\|\times\|B\|}}})
 
-# Menghitung kemiripan kosinus antara semua buku berdasarkan kolom 'tags'
-cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
+- $A$ dan $B$ adalah dua vektor yang mewakili dua buku dalam ruang fitur.
+- $A \cdot B$ adalah hasil kali dot product dari kedua vektor.
+- $\|A\|$ dan $\|B\|$ adalah norma (magnitudo) dari vektor $A$ dan $B$.
 
-# Mendefinisikan fungsi untuk memberikan rekomendasi berdasarkan kemiripan
-def content_based_recommendations(title, cosine_sim=cosine_sim):
-    # Mencari indeks dari buku berdasarkan judul
-    idx = data[data['original_title'] == title].index[0]
-    
-    # Mengambil skor kemiripan dari buku yang dipilih dengan semua buku lainnya
-    sim_scores = list(enumerate(cosine_sim[idx]))
-    
-    # Mengurutkan skor buku berdasarkan kemiripan
-    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-    
-    # Mengambil 10 buku dengan skor tertinggi (selain buku itu sendiri)
-    sim_scores = sim_scores[1:11]
-    
-    # Mendapatkan indeks dari buku-buku yang direkomendasikan
-    book_indices = [i[0] for i in sim_scores]
-    
-    # Mengembalikan judul buku yang direkomendasikan
-    return data['original_title'].iloc[book_indices]
-```
+Nilai Cosine Similarity berkisar antara 0 hingga 1:
+- 1 berarti kedua vektor (buku) sangat mirip.
+- 0 berarti tidak ada kemiripan.
 
-#### Hasil dari Content-Based Filtering
+#### Parameter Cosine Similarity:
+Model **Cosine Similarity** mengunakan vektor yang sudah dihasilkan dari **TF-IDF**. Proses ini bertumpu pada representasi deskriptif (kolom **tags**) dari setiap buku yang telah melalui transformasi teks menjadi vektor.
+
+#### Hasil dari Cosine Similarity
 
 Contoh rekomendasi untuk buku **"Harry Potter and the Order of the Phoenix"**:
 
@@ -214,36 +201,36 @@ Content-Based Recommendations for 'Harry Potter and the Order of the Phoenix':
 
 Berdasarkan pendekatan ini, model merekomendasikan buku-buku yang memiliki kemiripan tinggi dengan **Harry Potter and the Order of the Phoenix**, yang kebanyakan merupakan judul-judul dalam seri Harry Potter.
 
-#### Kelebihan dan Kekurangan Content-Based Filtering:
-- **Kelebihan**: Rekomendasi yang diberikan lebih akurat untuk buku-buku yang memiliki deskripsi serupa dengan buku yang telah dibaca pengguna.
-- **Kekurangan**: Model ini terbatas pada fitur-fitur yang telah diidentifikasi dari buku itu sendiri, sehingga sulit memberikan rekomendasi yang sangat berbeda dari preferensi awal pengguna.
+#### Kelebihan:
+- **Sederhana dan Efektif**: Algoritma ini sederhana untuk diimplementasikan dan sangat cocok ketika kita memiliki fitur deskriptif yang baik dari setiap item (seperti **tags** pada buku). Cosine similarity bisa menghitung kemiripan dengan cepat dan langsung memberikan rekomendasi berdasarkan atribut item yang telah ada.
+- **Tidak Memerlukan Data Pengguna**: Tidak bergantung pada data interaksi pengguna-buku, sehingga model tetap dapat memberikan rekomendasi bahkan kepada pengguna baru (cold start untuk pengguna).
+  
+#### Kekurangan:
+- **Cenderung Overfit ke Preferensi Item yang Serupa**: Karena hanya memperhitungkan atribut yang sudah ada pada item, model ini mungkin hanya merekomendasikan buku yang sangat mirip dengan buku yang sudah dipilih atau dibaca pengguna. Ini dapat menyebabkan kurangnya keragaman dalam rekomendasi.
+- **Keterbatasan dalam Menangkap Preferensi Pengguna yang Kompleks**: Model ini hanya berfokus pada fitur item dan tidak mempertimbangkan preferensi pengguna secara lebih luas. Jadi, jika preferensi pengguna tidak jelas dari atribut buku, model ini bisa kurang akurat.
 
-### 2. Collaborative Filtering
 
-Pendekatan **Collaborative Filtering** menggunakan data rating yang diberikan pengguna untuk merekomendasikan buku. Model yang digunakan pada proyek ini adalah **SVD (Singular Value Decomposition)**, yang merupakan salah satu teknik terkenal dalam sistem rekomendasi berbasis kolaborasi.
+### 2. Singular Value Decomposition (Collaborative Filtering)
 
-Dengan menggunakan library **Surprise**, model dilatih pada dataset rating untuk memprediksi rating yang akan diberikan pengguna terhadap buku yang belum dibaca berdasarkan pola rating pengguna lain yang mirip.
+Pada pendekatan **Collaborative Filtering**, model yang digunakan adalah **SVD (Singular Value Decomposition)**, yang merupakan salah satu teknik paling populer dalam sistem rekomendasi berbasis matrix factorization. Model ini memfaktorkan matriks interaksi pengguna-buku (misalnya, matriks rating) menjadi tiga matriks yang lebih kecil, yang mempermudah prediksi rating buku yang belum pernah diulas oleh pengguna.
 
-Proses training dan prediksi dilakukan sebagai berikut:
+#### Cara Kerja SVD:
+SVD memecah matriks pengguna-buku ($R$) menjadi tiga matriks:
 
-```python
-from surprise import SVD
-from surprise.model_selection import train_test_split
-from surprise import accuracy
+![Matrix Decomposition](https://latex.codecogs.com/png.image?\dpi{150}\bg{white}\mathbf{R=U\Sigma&space;V^T})
 
-# Membagi dataset menjadi trainset dan testset
-trainset, testset = train_test_split(ratings, test_size=0.25)
+- $U$ adalah matriks pengguna (mengandung preferensi pengguna terhadap fitur tersembunyi).
+- $\Sigma$ adalah matriks diagonal yang berisi singular values.
+- $V^T$ adalah matriks fitur buku (mengandung informasi tentang hubungan antar fitur buku).
 
-# Membuat dan melatih model SVD
-model = SVD()
-model.fit(trainset)
+Prediksi rating dihitung dengan merekonstruksi matriks $R$ dari hasil perkalian ketiga matriks tersebut. 
 
-# Menguji model pada testset dan menghitung RMSE
-predictions = model.test(testset)
-rmse = accuracy.rmse(predictions)
-```
-
-Model kemudian memberikan rekomendasi buku untuk pengguna tertentu berdasarkan prediksi rating tertinggi.
+#### Parameter pada SVD:
+Model **SVD** memiliki beberapa parameter utama yang dapat disesuaikan:
+- **n_factors**: Jumlah faktor tersembunyi yang digunakan untuk merepresentasikan setiap pengguna dan buku. Default biasanya 100.
+- **n_epochs**: Jumlah iterasi pelatihan model untuk memastikan konvergensi.
+- **lr_all**: Learning rate untuk pembaruan nilai faktor.
+- **reg_all**: Faktor regulasi untuk mencegah overfitting dengan membatasi bobot model.
 
 #### Hasil dari Collaborative Filtering
 
@@ -265,33 +252,46 @@ Collaborative Filtering Recommendations for User 1:
 
 Rekomendasi ini dihasilkan dengan mempertimbangkan preferensi rating dari User 1, yang sebelumnya memberikan rating tinggi untuk buku **"The Shadow of the Wind"**.
 
-#### Kelebihan dan Kekurangan Collaborative Filtering:
-- **Kelebihan**: Model ini mampu memberikan rekomendasi buku-buku yang berbeda dan unik berdasarkan pola rating pengguna lain yang mirip, tanpa tergantung pada deskripsi buku.
-- **Kekurangan**: Model ini membutuhkan data rating yang cukup untuk dapat memberikan prediksi yang akurat. Jika pengguna baru atau buku baru memiliki sedikit data rating, hasil rekomendasi bisa kurang optimal.
-
----
-
-Berikut adalah pembaruan untuk bagian **Evaluation**:
+#### Kelebihan:
+- **Memanfaatkan Data Interaksi Pengguna**: SVD mampu menangkap preferensi laten pengguna berdasarkan pola interaksi (seperti rating atau perilaku eksplisit lainnya), sehingga dapat memberikan rekomendasi yang lebih personal dan akurat.
+- **Mengatasi Masalah Sparsity**: Dengan melakukan factorization, SVD bisa menangani masalah **sparsity** (kelangkaan data) yang umum dalam data interaksi pengguna-item. Algoritma ini bisa memberikan prediksi yang baik bahkan dengan sedikit interaksi yang tersedia.
+  
+#### Kekurangan:
+- **Cold Start untuk Pengguna dan Item Baru**: SVD membutuhkan data interaksi pengguna-buku. Jika tidak ada data interaksi (misalnya untuk pengguna atau item baru), model ini kesulitan untuk memberikan rekomendasi yang relevan.
+- **Lebih Rumit dan Memakan Waktu Pelatihan**: Dibandingkan dengan metode seperti Cosine Similarity, SVD lebih kompleks dalam perhitungannya. Selain itu, model ini juga membutuhkan waktu pelatihan yang lebih lama, terutama ketika bekerja dengan dataset yang besar.
 
 ---
 
 ## Evaluation
 
-Tahap evaluasi dilakukan untuk mengukur kinerja kedua model sistem rekomendasi, yaitu **Content-Based Filtering** dan **Collaborative Filtering**. Pada proyek ini, dua metrik evaluasi yang digunakan adalah:
-
-1. **Root Mean Squared Error (RMSE)** - digunakan untuk evaluasi model Collaborative Filtering.
-2. **Precision at K** - digunakan untuk mengukur kinerja model Collaborative Filtering dalam hal relevansi rekomendasi.
-
 ### 1. Evaluasi pada Content-Based Filtering
 
-Untuk model **Content-Based Filtering**, evaluasi lebih bersifat subjektif karena model ini merekomendasikan buku berdasarkan kemiripan deskriptif. Namun, kualitas rekomendasi dapat diukur dengan menilai seberapa baik rekomendasi tersebut sesuai dengan preferensi pengguna.
+#### Precision
 
-Pada contoh rekomendasi yang dihasilkan untuk buku **"Harry Potter and the Order of the Phoenix"**, model berhasil merekomendasikan buku-buku lain dari seri **Harry Potter**, yang menunjukkan bahwa model mampu menangkap kesamaan fitur secara akurat. Namun, tidak ada metrik kuantitatif yang digunakan untuk mengevaluasi model ini, karena bergantung pada tingkat kemiripan antar buku.
+Precision mengukur proporsi rekomendasi yang benar-benar relevan dibandingkan dengan total rekomendasi yang diberikan. Rumus untuk menghitung precision adalah:
 
-**Kelebihan**: Evaluasi ini menunjukkan bahwa Content-Based Filtering cocok untuk merekomendasikan buku yang serupa dengan buku yang sudah diketahui pengguna.  
-**Kekurangan**: Model ini kurang efektif dalam menemukan rekomendasi baru yang berbeda dari buku-buku serupa.
+![Precision](https://latex.codecogs.com/png.image?\dpi{150}\bg{white}\mathbf{Precision=\frac{Jumlah&space;True&space;Positives}{Jumlah&space;Rekomendasi&space;yang&space;Diberikan}})
 
+Dalam konteks ini:
+- **True Positives** adalah jumlah buku yang direkomendasikan dan juga benar-benar sudah dibaca atau disukai oleh pengguna.
+- **Jumlah Rekomendasi yang Diberikan** adalah total buku yang direkomendasikan oleh sistem.
+
+Evaluasi precision dilakukan dalam dua versi:
+
+1. **Precision berdasarkan variabel _actual_**: Dalam versi ini, precision dihitung dengan membandingkan buku yang direkomendasikan dengan daftar buku _actual_. Hasil evaluasi ini menunjukkan precision sebesar **1.0**, yang berarti bahwa semua buku yang direkomendasikan adalah bagian dari seri **Harry Potter**, sesuai dengan variabel _actual_.
+
+2. **Precision berdasarkan perhitungan dari user 2**: Untuk mengevaluasi model menggunakan data pengguna lain, precision dihitung berdasarkan relevansi rekomendasi terhadap preferensi pengguna dengan ID **user 2**. Pada kasus ini, precision adalah **0.7**, yang menunjukkan bahwa 70% dari buku yang direkomendasikan sesuai dengan apa yang sudah diberi rating tinggi oleh pengguna tersebut.
+
+#### Recall
+
+Selain precision, saya juga menghitung **Recall**, yang mengukur sejauh mana model dapat menemukan semua buku relevan dalam koleksi pengguna. Rumus recall adalah:
+
+![Recall](https://latex.codecogs.com/png.image?\dpi{150}\bg{white}\mathbf{Recall=\frac{Jumlah&space;True&space;Positives}{Jumlah&space;Total&space;Buku&space;Relevan&space;yang&space;Ada}})
+
+Pada evaluasi untuk **user 2**, recall menghasilkan nilai sebesar **0.13**, menunjukkan bahwa hanya sebagian kecil dari total buku relevan yang berhasil ditemukan oleh model.
 ### 2. Evaluasi pada Collaborative Filtering
+
+#### RMSE
 
 Untuk **Collaborative Filtering**, model dievaluasi secara kuantitatif dengan menggunakan **RMSE (Root Mean Squared Error)**. Metrik ini mengukur seberapa baik model memprediksi rating buku yang diberikan oleh pengguna dibandingkan dengan rating asli. Semakin kecil nilai RMSE, semakin baik model dalam melakukan prediksi.
 
@@ -303,7 +303,18 @@ RMSE: 0.8306
 
 Nilai **RMSE** sebesar **0.8306** menunjukkan bahwa model memiliki kinerja yang cukup baik dalam memprediksi rating pengguna terhadap buku. Model ini mampu menghasilkan prediksi dengan kesalahan rata-rata yang cukup kecil, sehingga rekomendasi yang diberikan lebih akurat.
 
-### 3. Precision at K
+**Root Mean Squared Error (RMSE)** adalah metrik yang menghitung akar kuadrat dari rata-rata kesalahan kuadrat antara rating yang diprediksi dan rating asli. Rumusnya adalah sebagai berikut:
+
+![RMSE](https://latex.codecogs.com/png.image?\dpi{150}\bg{white}\mathbf{RMSE=\sqrt{\frac{1}{n}\sum_{i=1}^{n}(y_i-\hat{y}_i)^2}})
+
+Di mana:
+- $n$ adalah jumlah prediksi
+- $y_i$ adalah nilai asli (rating yang diberikan oleh pengguna)
+- $\hat{y}_i$ adalah nilai prediksi (rating yang diprediksi oleh model)
+
+RMSE memberikan ukuran absolut dari seberapa jauh prediksi model dari nilai asli, sehingga semakin kecil nilai RMSE, semakin baik model dalam melakukan prediksi.
+
+#### Precision at K
 
 Untuk lebih memahami relevansi dari rekomendasi yang diberikan, digunakan juga metrik **Precision at K (P@K)**. Precision at K mengukur proporsi item relevan (dalam hal ini buku-buku yang disukai pengguna) di antara rekomendasi teratas yang diberikan model.
 
@@ -320,22 +331,9 @@ Dengan demikian, metrik ini memberikan informasi lebih rinci tentang kinerja mod
 
 #### Kesimpulan Evaluasi
 
-- **Content-Based Filtering**: Evaluasi model ini lebih didasarkan pada interpretasi kemiripan antar buku yang direkomendasikan. Dalam kasus rekomendasi **Harry Potter**, model bekerja dengan baik untuk merekomendasikan buku yang serupa.
+- **Content-Based Filtering**: Metrik precision menunjukkan bahwa model mampu merekomendasikan buku dengan akurasi tinggi dalam hal relevansi dengan apa yang sudah dibaca oleh pengguna. Namun, rendahnya nilai recall menunjukkan bahwa masih banyak buku relevan yang belum direkomendasikan oleh model. Kombinasi precision dan recall ini membantu memberikan gambaran lebih jelas tentang kinerja model dalam merekomendasikan konten yang sesuai dengan preferensi pengguna.
   
 - **Collaborative Filtering**: Berdasarkan nilai **RMSE** sebesar **0.8306**, model ini mampu memprediksi rating dengan akurasi yang baik. Precision at K juga menunjukkan kinerja yang baik dalam merekomendasikan buku yang relevan kepada pengguna.
-
-### Formula dan Cara Kerja RMSE
-
-**Root Mean Squared Error (RMSE)** adalah metrik yang menghitung akar kuadrat dari rata-rata kesalahan kuadrat antara rating yang diprediksi dan rating asli. Rumusnya adalah sebagai berikut:
-
-![RMSE](https://latex.codecogs.com/png.image?\dpi{150}\bg{white}\mathbf{RMSE=\sqrt{\frac{1}{n}\sum_{i=1}^{n}(y_i-\hat{y}_i)^2}})
-
-Di mana:
-- $n$ adalah jumlah prediksi
-- $y_i$ adalah nilai asli (rating yang diberikan oleh pengguna)
-- $\hat{y}_i$ adalah nilai prediksi (rating yang diprediksi oleh model)
-
-RMSE memberikan ukuran absolut dari seberapa jauh prediksi model dari nilai asli, sehingga semakin kecil nilai RMSE, semakin baik model dalam melakukan prediksi.
 
 ---
 
