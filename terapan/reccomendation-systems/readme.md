@@ -289,6 +289,11 @@ Selain precision, saya juga menghitung **Recall**, yang mengukur sejauh mana mod
 ![Recall](https://latex.codecogs.com/png.image?\dpi{150}\bg{white}\mathbf{Recall=\frac{Jumlah&space;True&space;Positives}{Jumlah&space;Total&space;Buku&space;Relevan&space;yang&space;Ada}})
 
 Pada evaluasi untuk **user 2**, recall menghasilkan nilai sebesar **0.13**, menunjukkan bahwa hanya sebagian kecil dari total buku relevan yang berhasil ditemukan oleh model.
+
+#### Dampak Terhadap Problem Statement dan Goals:
+- **Overload Informasi**: Model berhasil mengurangi overload informasi dengan merekomendasikan buku yang serupa secara konten, tetapi mungkin terlalu spesifik dan kurang beragam, sehingga tidak sepenuhnya membantu pengguna menemukan variasi bacaan baru yang berpotensi menarik.
+- **Rekomendasi Personal**: Model secara teknis berhasil memberikan rekomendasi yang relevan berdasarkan konten, tetapi tidak secara sempurna meningkatkan **pengalaman membaca yang lebih personal** karena terbatasnya variasi rekomendasi.
+  
 ### 2. Evaluasi pada Collaborative Filtering
 
 #### RMSE
@@ -328,6 +333,15 @@ Implementasi Precision at K dilakukan dengan cara menghitung seberapa banyak buk
 ![Precision@10](https://latex.codecogs.com/png.image?\dpi{150}\bg{white}\mathbf{Precision@10=\frac{7}{10}=0.7})
 
 Dengan demikian, metrik ini memberikan informasi lebih rinci tentang kinerja model dalam memberikan rekomendasi yang relevan dan berguna bagi pengguna.
+
+#### Dampak Terhadap Problem Statement dan Goals:
+- **Pengalaman Membaca yang Lebih Personal**: Model ini berhasil mengatasi keterbatasan Content-Based Filtering dengan menawarkan rekomendasi yang lebih bervariasi berdasarkan preferensi kolektif pengguna, sehingga meningkatkan kepuasan dan personalisasi pengalaman pengguna.
+- **Meningkatkan Kepuasan Pengguna**: Model Collaborative Filtering lebih fleksibel dalam menangkap preferensi kompleks pengguna karena tidak hanya bergantung pada kesamaan konten buku, tetapi juga interaksi sosial antar pengguna yang memiliki selera serupa. Hal ini berkontribusi pada tercapainya tujuan utama proyek, yaitu meningkatkan **kepuasan pengguna** dengan rekomendasi yang lebih kaya dan bervariasi.
+
+### Apakah Solusi Model Berdampak?
+Secara keseluruhan, kedua pendekatan (Content-Based Filtering dan Collaborative Filtering) menawarkan kontribusi yang berbeda terhadap solusi masalah. Namun, dari segi **dampak bisnis**, model **Collaborative Filtering** lebih berhasil memenuhi ekspektasi, terutama dalam hal personalisasi rekomendasi yang lebih baik dan lebih bervariasi. **Content-Based Filtering** masih berguna dalam memberikan rekomendasi yang relevan, tetapi model ini terbatas dalam hal penemuan buku baru yang mungkin disukai pengguna.
+
+**Rekomendasi Bisnis**: Untuk mencapai solusi yang lebih holistik, kombinasi dari kedua pendekatan dapat memberikan hasil yang lebih optimal. Content-Based Filtering dapat diandalkan untuk rekomendasi langsung berdasarkan buku yang sudah disukai, sementara Collaborative Filtering lebih baik dalam memperkenalkan rekomendasi baru yang berpotensi meningkatkan engagement pengguna.
 
 #### Kesimpulan Evaluasi
 
